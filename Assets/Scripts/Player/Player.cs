@@ -16,15 +16,13 @@ public class Player : Entity
     public float jumpForce;
 
     [Header("Dash info")]
-    [SerializeField] private float dashCoolDown;
-    private float dashUsageTimer;
     public float dashSpeed;
     public float dashDuration;
 
     public float dashDir { get; private set; }
 
 
-
+    public SkillManager skill { get; private set; }
 
 
     public PlayerStateMachine stateMachine { get; private set; }
@@ -38,6 +36,8 @@ public class Player : Entity
 
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
     public PlayerCounterAttackState counterAttackState { get; private set; }
+    public PlayerAimSwordState aimSwordState{ get; private set; }
+    public PlayerCatchSwordSTate catchSwordSTate{ get; private set; }
 
 
     protected override void Awake()
@@ -55,12 +55,14 @@ public class Player : Entity
         wallJumpState = new PlayerWallJumpState(this, stateMachine, "Jump");
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
         counterAttackState = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
-
+        aimSwordState = new PlayerAimSwordState(this, stateMachine, "AimSword");
+        catchSwordSTate = new PlayerCatchSwordSTate(this, stateMachine, "CatchSword");
     }
 
     protected override void Start()
     {
         base.Start();
+        skill = SkillManager.instance;
         stateMachine.Initialize(idleState);
     }
 
@@ -88,11 +90,10 @@ public class Player : Entity
         if (isWallDetected())
             return;
 
-        dashUsageTimer -= Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && SkillManager.instance.dash.CanUseSkill())
         {
-            dashUsageTimer = dashCoolDown;
+
             dashDir = Input.GetAxisRaw("Horizontal");
             if (dashDir == 0)
             {

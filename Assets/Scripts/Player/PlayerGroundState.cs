@@ -14,8 +14,11 @@ public class PlayerGroundState : PlayerState
     {
         base.Update();
 
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+            stateMachine.ChangeState(player.aimSwordState);
+
         if (Input.GetKeyDown(KeyCode.Q))
-            stateMachine.ChangeState(player.counterAttackState);
+                stateMachine.ChangeState(player.counterAttackState);
             
         if (Input.GetKeyDown(KeyCode.Mouse0))
             stateMachine.ChangeState(player.primaryAttack);
