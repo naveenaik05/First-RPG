@@ -18,16 +18,34 @@ public class Sword_Skill : Skill
     [SerializeField] private Transform dotsParent;
     private GameObject[] dots;
 
+    protected override void Start()
+    {
+        base.Start();
+        GeneratDots();
+    }
+
     protected override void Update()
     {
         finalDir = new Vector2(AimDirection().normalized.x * launchForce.x, AimDirection().normalized.y * launchForce.y);
+
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            for (int i = 0; i < dots.Length; i++)
+            {
+                dots[i].transform.position = DotsPosition(i * spcaeBetweenDots);
+            }
+        }
     }
 
     public void CreateSword()
     {
         GameObject newSword = Instantiate(swordPrefab, player.transform.position, transform.rotation);
         Sword_Skill_Controller newSwordScript = newSword.GetComponent<Sword_Skill_Controller>();
-        newSwordScript.SetupSword(finalDir, swordGravity);
+        newSwordScript.SetupSword(finalDir, swordGravity,player);
+
+        player.AssignNewSword(newSword);
+
+        DotsActive(false);
     }
 
     public Vector2 AimDirection()
@@ -38,5 +56,30 @@ public class Sword_Skill : Skill
         return direction;
     }
 
+    public void DotsActive(bool _isActive)
+    {
+        for (int i = 0; i < dots.Length; i++)
+        {
+            dots[i].SetActive(_isActive);
+        }
+    }
 
+    private void GeneratDots()
+    {
+        dots = new GameObject[numberOfDots];
+        for (int i = 0; i < numberOfDots; i++)
+        {
+            dots[i] = Instantiate(dotPrefab, player.transform.position, Quaternion.identity, dotsParent);
+            dots[i].SetActive(false);
+        }
+    }
+
+    private Vector2 DotsPosition(float t)
+    {
+        Vector2 position = (Vector2)player.transform.position + new Vector2(
+            AimDirection().normalized.x * launchForce.x, AimDirection().normalized.y * launchForce.y) * t
+            + .5f * (Physics2D.gravity * swordGravity) * (t * t);
+
+        return position;
+    }
 }
