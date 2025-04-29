@@ -40,7 +40,8 @@ public class Player : Entity
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
     public PlayerCounterAttackState counterAttackState { get; private set; }
     public PlayerAimSwordState aimSwordState{ get; private set; }
-    public PlayerCatchSwordSTate catchSwordSTate{ get; private set; }
+    public PlayerCatchSwordSTate catchSwordState{ get; private set; }
+    public PlayerBlackHoleState blackHoleState { get; private set; }
 
 
     protected override void Awake()
@@ -59,7 +60,9 @@ public class Player : Entity
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
         counterAttackState = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
         aimSwordState = new PlayerAimSwordState(this, stateMachine, "AimSword");
-        catchSwordSTate = new PlayerCatchSwordSTate(this, stateMachine, "CatchSword");
+        catchSwordState = new PlayerCatchSwordSTate(this, stateMachine, "CatchSword");
+        blackHoleState = new PlayerBlackHoleState(this, stateMachine, "Jump");
+
     }
 
     protected override void Start()
@@ -84,9 +87,10 @@ public class Player : Entity
 
     public void CatchTheSword()
     {
-        stateMachine.ChangeState(catchSwordSTate);
+        stateMachine.ChangeState(catchSwordState);
         Destroy(sword);
     }
+
 
     public IEnumerator BusyFor(float _seconds)
     {

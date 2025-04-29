@@ -13,9 +13,11 @@ public class PlayerGroundState : PlayerState
     public override void Update()
     {
         base.Update();
+        if (Input.GetKeyDown(KeyCode.R))
+            stateMachine.ChangeState(player.blackHoleState);
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && HashNoSword())
-            stateMachine.ChangeState(player.aimSwordState);
+                stateMachine.ChangeState(player.aimSwordState);
 
         if (Input.GetKeyDown(KeyCode.Q))
             stateMachine.ChangeState(player.counterAttackState);

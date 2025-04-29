@@ -4,6 +4,7 @@ using UnityEngine;
 public class Entity : MonoBehaviour
 {
     #region Components
+    public SpriteRenderer sr;
     public Rigidbody2D rb { get; private set; }
     public Animator animator { get; private set; }
     public EntityFX fx { get; private set; }
@@ -34,6 +35,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Start()
     {
+        sr = GetComponentInChildren<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         fx = GetComponent<EntityFX>();
@@ -109,5 +111,14 @@ public class Entity : MonoBehaviour
         yield return new WaitForSeconds(knowBackDuration);
 
         isKnocked = false;
+    }
+
+
+    public void MakeTransparent(bool _transparent)
+    {
+        if (_transparent)
+            sr.color = Color.clear;
+        else
+            sr.color = Color.white;
     }
 }
