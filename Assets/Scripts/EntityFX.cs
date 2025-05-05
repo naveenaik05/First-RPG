@@ -10,18 +10,36 @@ public class EntityFX : MonoBehaviour
     [SerializeField] private Material hitMat;
     private Material originalMat;
 
+    [Header("Ailments color")]
+    [SerializeField] private Color[] igniteColor;
+    [SerializeField] private Color[] chillColor;
+    [SerializeField] private Color[] shockColor;
+
     private void Start()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
         originalMat = sr.material;
     }
 
+    public void MakeTransparent(bool _transparent)
+    {
+        if (_transparent)
+            sr.color = Color.clear;
+        else
+            sr.color = Color.white;
+    }
+
+
     private IEnumerator FlashFX()
     {
         sr.material = hitMat;
 
+        Color currentColor = sr.color;
+        sr.color = Color.white;
+
         yield return new WaitForSeconds(flashDuration);
 
+        sr.color = currentColor;
         sr.material = originalMat;
     }
 
@@ -33,9 +51,48 @@ public class EntityFX : MonoBehaviour
             sr.color = Color.red;
     }
 
-    private void CancelRedBlink()
+    private void CancelColorChange()
     {
         CancelInvoke();
         sr.color = Color.white;
+    }
+
+    public void IgniteFXFor(float _seconds)
+    {
+        InvokeRepeating("IgniteColorFX", 0, 0.3f);
+        Invoke("CancelColorChange", _seconds);
+    }
+    public void ChillFXFor(float _seconds)
+    {
+        InvokeRepeating("ChillColorFX", 0, 0.3f);
+        Invoke("CancelColorChange", _seconds);
+    }
+    public void ShockFXFor(float _seconds)
+    {
+        InvokeRepeating("ShockColorFX", 0, 0.3f);
+        Invoke("CancelColorChange", _seconds);
+    }
+
+
+    private void IgniteColorFX()
+    {
+        if (sr.color != igniteColor[0])
+            sr.color = igniteColor[0];
+        else
+            sr.color = igniteColor[1];
+    }
+    private void ChillColorFX()
+    {
+        if (sr.color != chillColor[0])
+            sr.color = chillColor[0];
+        else
+            sr.color = chillColor[1];
+    }
+    private void ShockColorFX()
+    {
+        if (sr.color != shockColor[0])
+            sr.color = shockColor[0];
+        else
+            sr.color = shockColor[1];
     }
 }

@@ -4,6 +4,7 @@ public class Clone_Skill_Controller : MonoBehaviour
 {
     private SpriteRenderer sr;
     private Animator animator;
+    private Player player;
     [SerializeField] private float colorLoosingSpeed;
 
     [SerializeField] private Transform attackCheck;
@@ -33,15 +34,17 @@ public class Clone_Skill_Controller : MonoBehaviour
                 Destroy(gameObject);
         }
     }
-    public void SetupClone(Transform _newPosition, float _cloneDuration, bool _canAttack, Vector3 _offset, Transform _closestEnemy, bool _canDuplicate,float _chanceDuplicate)
+    public void SetupClone(Transform _newPosition, float _cloneDuration, bool _canAttack, Vector3 _offset, Transform _closestEnemy, bool _canDuplicate,float _chanceDuplicate,Player _player)
     {
         if (_canAttack)
         {
             animator.SetInteger("AttackNumber", Random.Range(1,3));
         }
         transform.position = _newPosition.position + _offset;
+        player = _player;
         cloneTimer = _cloneDuration;
         closestEnemy = _closestEnemy;
+
         canDuplicateClone = _canDuplicate;
         chanceDuplicate = _chanceDuplicate;
         FaceClosesTarget();
@@ -59,12 +62,13 @@ public class Clone_Skill_Controller : MonoBehaviour
         {
             if (hit.GetComponent<Enemy>() != null)
             {
-                hit.GetComponent<Enemy>().Damage();
+                // hit.GetComponent<Enemy>().DamageEffect();
+                player.stats.DoDamage(hit.GetComponent<CharacterStats>());
 
                 if (canDuplicateClone)
                 {
-                    if(Random.Range(0,100) < chanceDuplicate)
-                    SkillManager.instance.clone.CreateClone(hit.transform, new Vector3(.5f * facingDir, 0));
+                    if (Random.Range(0, 100) < chanceDuplicate)
+                        SkillManager.instance.clone.CreateClone(hit.transform, new Vector3(.5f * facingDir, 0));
                 }
             }
         }
