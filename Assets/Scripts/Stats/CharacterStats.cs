@@ -14,12 +14,12 @@ public class CharacterStats : MonoBehaviour
     public Stat maxHealth;
     public Stat armor;
     public Stat evasion;
+    public Stat magicResistance;
 
     [Header("Offesnsive stats")]
     public Stat damage;
     public Stat critChance;
     public Stat critPower;
-    public Stat magicResistance;
 
     [Header("Magic stats")]
     public Stat fireDamage;
